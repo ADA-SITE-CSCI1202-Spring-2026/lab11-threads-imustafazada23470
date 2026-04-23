@@ -1,0 +1,46 @@
+class MathTask implements Runnable {
+    private int id;
+
+    public MathTask(int id) {
+        this.id=id;
+    }
+
+    @Override
+    public void run(){
+        long sum =0;
+        for (int j =0; j<=1000000; j++){
+            sum+=id*j+Math.pow(id,3);
+        }
+        System.out.println(id+sum);
+    }
+}
+
+
+
+public class Lab1 {
+    public static void main (String [] args) {
+        int cores = Runtime.getRuntime().availableProcessors();
+        System.out.println("Cores"+ cores);
+        Thread[] threads =new Thread[cores];
+        long startTime= System.currentTimeMillis();
+
+        for (int i =1; i<=cores; i++) {
+           MathTask task = new MathTask(i);
+           Thread t = new Thread(task);
+           threads[i-1]=t;
+           threads[i-1].start();
+           
+        }
+
+        for(int i =0; i<=cores; i++){
+            try {
+                threads[i].join();
+            } catch (Exception e) { }
+        }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("Execution time: " + (endTime-startTime));
+    }
+    
+   
+}
